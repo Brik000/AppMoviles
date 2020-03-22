@@ -52,7 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private Marker ubicacionActual;
-    private TextView site;
+    private TextView textoInferior;
     private List<Marker> marcadores;
     private Polyline seguimiento;
     @Override
@@ -70,8 +70,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Manifest.permission.ACCESS_FINE_LOCATION
         }, 11);
 
-        site = findViewById(R.id.TextoPrincipal);
-        site.setTextColor(Color.BLUE);
+        textoInferior = findViewById(R.id.TextoPrincipal);
+        textoInferior.setTextColor(Color.BLUE);
 
     }
     @SuppressLint("MissingPermission")
@@ -264,11 +264,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
         if (min == Double.MAX_VALUE) {
-            site.setText("");
+            textoInferior.setText("");
         } else if (min <= 50) {
-            site.setText("Usted se encuentra en " + nom);
+            textoInferior.setText("Usted se encuentra en " + nom);
         } else {
-            site.setText("El marcador mas cercano es a  " + nom + " y se encuentra a " + min + " metros");
+            textoInferior.setText("El marcador mas cercano es a  " + nom + " y se encuentra a " + min + " metros");
         }
 
     }
