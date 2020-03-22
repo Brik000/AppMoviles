@@ -70,8 +70,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Manifest.permission.ACCESS_FINE_LOCATION
         }, 11);
 
-        site = findViewById(R.id.siteTxt);
-        site.setTextColor(Color.RED);
+        site = findViewById(R.id.TextoPrincipal);
+        site.setTextColor(Color.BLUE);
 
     }
     @SuppressLint("MissingPermission")
@@ -79,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng base = new LatLng(3.451647, -76.531982);
+        LatLng base = new LatLng(5.451647, -90.531982);
         ubicacionActual = mMap.addMarker(new MarkerOptions().position(base).title("Usted esta aca")
                 .icon(bitmapDescriptorFromVector(getApplicationContext(),R.drawable.ic_person_green_24dp)));
 

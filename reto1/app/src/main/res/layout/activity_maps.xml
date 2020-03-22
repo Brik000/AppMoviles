@@ -33,7 +33,7 @@
         android:layout_marginBottom="30dp"
         android:textSize="30sp"
         android:visibility="visible"
-        android:id="@+id/siteTxt"/>
+        android:id="@+id/TextoPrincipal"/>
 
 
 
