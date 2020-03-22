@@ -55,8 +55,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView site;
     private List<Marker> marcadores;
     private Polyline seguimiento;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -75,39 +73,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         site = findViewById(R.id.siteTxt);
         site.setTextColor(Color.RED);
 
-
-
     }
-
-    public static double HaversineDistance(double lat1, double lat2, double lon1,
-                                           double lon2) {
-
-        double earthRadius = 6371; // km
-
-        lat1 = Math.toRadians(lat1);
-        lon1 = Math.toRadians(lon1);
-        lat2 = Math.toRadians(lat2);
-        lon2 = Math.toRadians(lon2);
-
-        double difLon = lon2-lon1;
-        double difLat = lat2-lat1;
-
-        double sinLat = Math.sin(difLat / 2);
-        double sinLon = Math.sin(difLon / 2);
-
-        double a = (sinLat * sinLat) + Math.cos(lat1)*Math.cos(lat2)*(sinLon*sinLon);
-        double c = 2 * Math.asin (Math.min(1.0, Math.sqrt(a)));
-
-        double distanceInMeters = earthRadius * c * 1000;
-
-        return (int)distanceInMeters;
-    }
-
-
-
     @SuppressLint("MissingPermission")
     @Override
-
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -125,6 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 new Dot(), new Gap(10));
         seguimiento =mMap.addPolyline(new PolylineOptions().color(Color.BLUE).clickable(false).pattern(pattern).visible(true));
     }
+
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorRes){
         Drawable vectorDrawable= ContextCompat.getDrawable(context,vectorRes);
         vectorDrawable.setBounds(0,0,vectorDrawable.getIntrinsicWidth(),vectorDrawable.getIntrinsicHeight());
@@ -135,32 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void actualizarTextDistancias() {
-        double min = Double.MAX_VALUE;
-        String nom = "";
-        Marker mark;
-         for(int i=0;i<marcadores.size();i++){
-             mark=marcadores.get(i);
-             double distance = HaversineDistance(mark.getPosition().latitude,
-                     ubicacionActual.getPosition().latitude,
-                     mark.getPosition().longitude,
-                     ubicacionActual.getPosition().longitude);
-             if (distance < min) {
-                 min = distance;
-                 nom = mark.getTitle();
-             }
 
-
-         }
-        if (min == Double.MAX_VALUE) {
-            site.setText("");
-        } else if (min <= 50) {
-            site.setText("Usted se encuentra en " + nom);
-        } else {
-            site.setText("El marcador mas cercano es a  " + nom + " y se encuentra a " + min + " metros");
-        }
-
-    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -171,15 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void nuevoRastro(LatLng nuevo){
 
-        List<LatLng> rastro = seguimiento.getPoints();
-        rastro.add(nuevo);
-        seguimiento.setPoints(rastro);
-        actualizarTextDistancias();
-
-
-    }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -276,5 +212,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, "la direccion actual es " + dir, Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+
+    public static double HaversineDistance(double lat1, double lat2, double lon1,
+                                           double lon2) {
+
+        double earthRadius = 6371; // km
+
+        lat1 = Math.toRadians(lat1);
+        lon1 = Math.toRadians(lon1);
+        lat2 = Math.toRadians(lat2);
+        lon2 = Math.toRadians(lon2);
+
+        double difLon = lon2-lon1;
+        double difLat = lat2-lat1;
+
+        double sinLat = Math.sin(difLat / 2);
+        double sinLon = Math.sin(difLon / 2);
+
+        double a = (sinLat * sinLat) + Math.cos(lat1)*Math.cos(lat2)*(sinLon*sinLon);
+        double c = 2 * Math.asin (Math.min(1.0, Math.sqrt(a)));
+
+        double distanceInMeters = earthRadius * c * 1000;
+
+        return (int)distanceInMeters;
+    }
+
+    public void nuevoRastro(LatLng nuevo){
+
+        List<LatLng> rastro = seguimiento.getPoints();
+        rastro.add(nuevo);
+        seguimiento.setPoints(rastro);
+        actualizarTextoDistancias();
+
+
+    }
+    public void actualizarTextoDistancias() {
+        double min = Double.MAX_VALUE;
+        String nom = "";
+        Marker mark;
+        for(int i=0;i<marcadores.size();i++){
+            mark=marcadores.get(i);
+            double distance = HaversineDistance(mark.getPosition().latitude,
+                    ubicacionActual.getPosition().latitude,
+                    mark.getPosition().longitude,
+                    ubicacionActual.getPosition().longitude);
+            if (distance < min) {
+                min = distance;
+                nom = mark.getTitle();
+            }
+
+        }
+        if (min == Double.MAX_VALUE) {
+            site.setText("");
+        } else if (min <= 50) {
+            site.setText("Usted se encuentra en " + nom);
+        } else {
+            site.setText("El marcador mas cercano es a  " + nom + " y se encuentra a " + min + " metros");
+        }
+
     }
 }
