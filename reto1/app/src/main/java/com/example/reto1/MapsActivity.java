@@ -92,6 +92,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         List<PatternItem> pattern = Arrays.<PatternItem>asList(
                 new Dot(), new Gap(10));
         seguimiento =mMap.addPolyline(new PolylineOptions().color(Color.BLUE).clickable(false).pattern(pattern).visible(true));
+
+        Toast.makeText(this, "Presione la pantalla para anadir marcadores", Toast.LENGTH_SHORT).show();
+
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorRes){
