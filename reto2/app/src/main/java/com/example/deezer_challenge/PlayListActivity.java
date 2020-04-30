@@ -79,12 +79,14 @@ public class PlayListActivity extends AppCompatActivity {
         long id=(long)getIntent().getExtras().get("id");
         String urlSearchPlaylist="https://api.deezer.com/playlist/"+id;
 
+        String urlSearchtrack="https://api.deezer.com/track/";
+
+
         new Thread(
                 () -> {
                     try {
                         HTTPSWebUtilDomi util = new HTTPSWebUtilDomi();
                         String json = util.GETrequest(urlSearchPlaylist);
-                        System.out.println(json);
 
                         Gson g = new Gson();
 
@@ -96,20 +98,28 @@ public class PlayListActivity extends AppCompatActivity {
                             playlistDescription.setText(pd.getDescription());
                             songNumber.setText("Songs: "+pd.getNb_tracks()+"");
                             fanNumber.setText("Fans: "+pd.getFans()+"");
-                            TracksReciever trackDetail=pd.getTracks();
-
-                            ArrayList<Track> tracks=trackDetail.getData();
-                            Log.e(">>>>>>>", tracks.get(0).getRelease_date()+"");
-                            recycler.setTracks(tracks);
 
                         });
 
+                        TracksReciever trackDetail=pd.getTracks();
 
+                        ArrayList<Track> tracks=trackDetail.getData();
 
+                        for(int i=0;i<tracks.size();i++){
+                            String json1 = util.GETrequest(urlSearchtrack+tracks.get(i).getId());
+                            Track tr=g.fromJson(json1,Track.class);
+                            tracks.set(i,tr);
+
+                        }
+
+                        runOnUiThread(()->{
+                            recycler.setTracks(tracks);
+                        });
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
                 }
         ).start();
 
