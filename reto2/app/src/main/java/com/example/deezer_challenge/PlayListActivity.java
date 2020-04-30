@@ -3,11 +3,14 @@ package com.example.deezer_challenge;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -18,47 +21,63 @@ import java.util.ArrayList;
 
 import model.Playlist;
 import model.Track;
+import model.TracksReciever;
 import util.HTTPSWebUtilDomi;
-import util.TrackAdapter;
+import util.TrackRecyclerAdapter;
 
 public class PlayListActivity extends AppCompatActivity {
-    TrackAdapter adapter;
+    RecyclerView reciclerTracks;
+    private ArrayList<Track> tracks;
     ImageView imageViewPlaylist;
     TextView playlistName;
     TextView playlistDescription;
     TextView songNumber;
     TextView fanNumber;
-    ListView songs;
+    TrackRecyclerAdapter recycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
 
-        adapter=new TrackAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+
+        reciclerTracks=findViewById(R.id.trackRecycler);
+        reciclerTracks.setLayoutManager(linearLayoutManager);
         imageViewPlaylist=findViewById(R.id.imageViewList);
         playlistName=findViewById(R.id.textViewNameList);
         playlistDescription=findViewById(R.id.textViewDescription);
         songNumber=findViewById(R.id.textViewSongs);
         fanNumber=findViewById(R.id.textViewFans);
-        songs=findViewById(R.id.listViewTracks);
 
-        songs.setAdapter(adapter);
+        tracks = new ArrayList<Track>();
+        recycler=new TrackRecyclerAdapter(tracks);
 
-        songs.setOnItemClickListener((parent, view, position, id) -> {
-            Track td=(Track) adapter.getItem(position);
-            Intent i=new Intent(PlayListActivity.this,TrackActivity.class);
-            i.putExtra("title",td.getTitle());
-            i.putExtra("album",td.getAlbum().getTitle());
-            i.putExtra("artist",td.getArtist().getName());
-            i.putExtra("image",td.getAlbum().getCover());
-            i.putExtra("duration",td.getDuration());
-            startActivity(i);
+        reciclerTracks.setAdapter(recycler);
+
+        recycler.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = reciclerTracks.getChildAdapterPosition(v);
+
+                Track item = (recycler.getItem(pos));
+
+                Intent i = new Intent(PlayListActivity.this, TrackActivity.class);
+                i.putExtra("title",item.getTitle());
+                i.putExtra("album",item.getAlbum().getTitle());
+                i.putExtra("artist",item.getArtist().getName());
+                i.putExtra("image",item.getAlbum().getCover());
+                i.putExtra("duration",item.getDuration());
+                startActivity(i);
+            }
         });
+
+
 
         long id=(long)getIntent().getExtras().get("id");
         String urlSearchPlaylist="https://api.deezer.com/playlist/"+id;
-        String baseUrlSearchTrack="https://api.deezer.com/track/";
 
         new Thread(
                 () -> {
@@ -66,7 +85,6 @@ public class PlayListActivity extends AppCompatActivity {
                         HTTPSWebUtilDomi util = new HTTPSWebUtilDomi();
                         String json = util.GETrequest(urlSearchPlaylist);
                         System.out.println(json);
-                        Log.e(">>>",json);
 
                         Gson g = new Gson();
 
@@ -78,20 +96,13 @@ public class PlayListActivity extends AppCompatActivity {
                             playlistDescription.setText(pd.getDescription());
                             songNumber.setText("Songs: "+pd.getNb_tracks()+"");
                             fanNumber.setText("Fans: "+pd.getFans()+"");
+                            TracksReciever trackDetail=pd.getTracks();
+
+                            ArrayList<Track> tracks=trackDetail.getData();
+
+                            recycler.setTracks(tracks);
+
                         });
-
-
-                        ArrayList<Track> tracks=new ArrayList<Track>();
-
-                        for (int cont=0;cont<pd.getTracks().getData().size();cont++){
-                            String search=  util.GETrequest(baseUrlSearchTrack+pd.getTracks().getData().get(cont).getId());
-                            Track trackDetail=g.fromJson(search,Track.class);
-                            runOnUiThread(()->{
-                                adapter.addTrack(trackDetail);
-                            });
-                        }
-
-
 
 
 

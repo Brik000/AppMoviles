@@ -65,12 +65,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trackRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listViewTracks"></ListView>
-
-
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>

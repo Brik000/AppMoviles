@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             HTTPSWebUtilDomi util = new HTTPSWebUtilDomi();
                             String json = util.GETrequest(urlSearch);
-                            Log.e(">>>",json);
 
                             Gson g = new Gson();
 
