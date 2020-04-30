@@ -1,13 +1,15 @@
 package com.example.deezer_challenge;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.google.gson.Gson;
 
@@ -17,34 +19,52 @@ import java.util.ArrayList;
 import model.Playlist;
 import model.Search;
 import util.HTTPSWebUtilDomi;
-import util.PlayListAdapter;
+import util.PlaylistRecyclerAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView listViewPlaylist;
+    RecyclerView reciclerPlaylist;
     ImageButton imgButtonSearch;
+    private ArrayList<Playlist> playlists;
     EditText editTextSearch;
-    PlayListAdapter adapter;
+    PlaylistRecyclerAdapter recycler;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         setContentView(R.layout.activity_main);
 
-        listViewPlaylist=findViewById(R.id.listViewPlaylists);
+        reciclerPlaylist=findViewById(R.id.playListRecycler);
+        reciclerPlaylist.setLayoutManager(linearLayoutManager);
         imgButtonSearch=findViewById(R.id.imageButtonSearch);
         editTextSearch=findViewById(R.id.editTextSearch);
-        adapter= new PlayListAdapter();
-        listViewPlaylist.setAdapter(adapter);
 
-        listViewPlaylist.setOnItemClickListener((parent, view, position, id) -> {
-            long itemId=((Playlist)(adapter.getItem(position))).getId();
-            Intent i=new Intent(MainActivity.this,TrackListActivity.class);
-            i.putExtra("id",itemId);
-            startActivity(i);
+        playlists = new ArrayList<Playlist>();
+        recycler=new PlaylistRecyclerAdapter(playlists);
 
+        reciclerPlaylist.setAdapter(recycler);
+
+        recycler.setClickListener(new View.OnClickListener(){
+
+
+            @Override
+            public void onClick(View v) {
+                int pos= reciclerPlaylist.getChildAdapterPosition(v);
+
+                long itemId  = ((Playlist)(recycler.getItem(pos))).getId();
+                Intent i=new Intent(MainActivity.this,PlayListActivity.class);
+                i.putExtra("id",itemId);
+                startActivity(i);
+            }
         });
+
+
 
         imgButtonSearch.setOnClickListener((view)->{
 
@@ -63,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                             Search ps = g.fromJson(json, Search.class);
                             ArrayList<Playlist> playlists=ps.getData();
                             runOnUiThread( ()-> {
-                                adapter.setPlaylists(playlists);
+                                recycler.setPlaylists(playlists);
                             } );
                         } catch (IOException e) {
                             e.printStackTrace();

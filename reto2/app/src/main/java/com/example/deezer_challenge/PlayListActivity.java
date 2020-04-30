@@ -21,7 +21,7 @@ import model.Track;
 import util.HTTPSWebUtilDomi;
 import util.TrackAdapter;
 
-public class TrackListActivity extends AppCompatActivity {
+public class PlayListActivity extends AppCompatActivity {
     TrackAdapter adapter;
     ImageView imageViewPlaylist;
     TextView playlistName;
@@ -33,7 +33,7 @@ public class TrackListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tracklist);
+        setContentView(R.layout.activity_playlist);
 
         adapter=new TrackAdapter();
         imageViewPlaylist=findViewById(R.id.imageViewList);
@@ -47,7 +47,7 @@ public class TrackListActivity extends AppCompatActivity {
 
         songs.setOnItemClickListener((parent, view, position, id) -> {
             Track td=(Track) adapter.getItem(position);
-            Intent i=new Intent(TrackListActivity.this,TrackActivity.class);
+            Intent i=new Intent(PlayListActivity.this,TrackActivity.class);
             i.putExtra("title",td.getTitle());
             i.putExtra("album",td.getAlbum().getTitle());
             i.putExtra("artist",td.getArtist().getName());
