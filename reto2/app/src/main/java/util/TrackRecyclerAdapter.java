@@ -39,7 +39,7 @@ public class TrackRecyclerAdapter extends RecyclerView.Adapter<TrackRecyclerAdap
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.playlist_piece_layout, parent, false);
+                .inflate(R.layout.track_piece_layout, parent, false);
         TrackRecyclerAdapter.ViewHolder holder = new TrackRecyclerAdapter.ViewHolder(v);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,10 +89,7 @@ public class TrackRecyclerAdapter extends RecyclerView.Adapter<TrackRecyclerAdap
         // Personalizamos un ViewHolder a partir de un lugar
         public void custom(Track track) {
 
-            if(tvname==null){
 
-                Log.e(">>>>>>", "failllllllllllllll" );
-            }
             tvname.setText(track.getTitle());
 
             tvartist.setText(track.getArtist().getName());

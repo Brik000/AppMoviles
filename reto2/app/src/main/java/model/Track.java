@@ -1,5 +1,7 @@
 package model;
 
+import android.util.Log;
+
 public class Track {
 
     long id;
@@ -17,6 +19,7 @@ public class Track {
         this.artist = artist;
         this.album=album;
         this.duration=duration;
+
     }
     public Track(){
 

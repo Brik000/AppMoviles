@@ -99,7 +99,7 @@ public class PlayListActivity extends AppCompatActivity {
                             TracksReciever trackDetail=pd.getTracks();
 
                             ArrayList<Track> tracks=trackDetail.getData();
-
+                            Log.e(">>>>>>>", tracks.get(0).getRelease_date()+"");
                             recycler.setTracks(tracks);
 
                         });
